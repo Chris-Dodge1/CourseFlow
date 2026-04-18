@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var courses: [Course] = []
+    @State private var assignments: [Assignment] = []
+    
     var body: some View {
         TabView {
             HomeView()
@@ -8,12 +11,12 @@ struct ContentView: View {
                     Label("Home", systemImage: "house")
                 }
 
-            CoursesView()
+            CoursesView(courses: $courses)
                 .tabItem {
                     Label("Courses", systemImage: "book")
                 }
 
-            AssignmentsView()
+            AssignmentsView(courses: $courses, assignments: $assignments)
                 .tabItem {
                     Label("Assignments", systemImage: "checklist")
                 }

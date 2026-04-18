@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CoursesView: View {
-    @State private var courses: [Course] = []
+    @Binding var courses: [Course]
     @State private var showingAddCourse = false
     
     var body: some View {
@@ -57,5 +57,5 @@ struct CoursesView: View {
 }
 
 #Preview {
-    CoursesView()
+    CoursesView(courses: .constant([]))
 }
