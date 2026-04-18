@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		9894E6132F91AA5B0019257C /* CourseFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CourseFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9894E6132F91AA5B0019257C /* CourseFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = CourseFlow.app; path = "/Users/chrisdodge/Desktop/CourseFlow/CourseFlow/build/Debug-iphoneos/CourseFlow.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				9894E6152F91AA5B0019257C /* CourseFlow */,
-				9894E6142F91AA5B0019257C /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		9894E6142F91AA5B0019257C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				9894E6132F91AA5B0019257C /* CourseFlow.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = 9894E60A2F91AA5B0019257C;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 9894E6142F91AA5B0019257C /* Products */;
+			productRefGroup = 9894E60A2F91AA5B0019257C;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
