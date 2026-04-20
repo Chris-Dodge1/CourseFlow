@@ -42,6 +42,10 @@ struct AssignmentsView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             
+                            Text("Type: \(assignment.type)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            
                             Text("Priority: \(assignment.priority)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

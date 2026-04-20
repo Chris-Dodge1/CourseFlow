@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 struct ContentView: View {
     @State private var courses: [Course] = []
@@ -45,20 +46,62 @@ struct ContentView: View {
                 continue
             }
             
-            let taskCount: Int
-            if daysUntilDue <= 1 {
-                taskCount = 1
-            } else if daysUntilDue <= 3 {
-                taskCount = 2
-            } else if daysUntilDue <= 7 {
-                taskCount = 3
-            } else if daysUntilDue <= 14 {
-                taskCount = 4
-            } else {
-                taskCount = 5
+            let labels: [String]
+            
+            switch assignment.type {
+            case "Exam":
+                labels = [
+                    "Review notes for",
+                    "Practice problems for",
+                    "Identify weak topics for",
+                    "Final review for",
+                    "Take"
+                ]
+            case "Quiz":
+                labels = [
+                    "Review material for",
+                    "Practice for",
+                    "Final review for",
+                    "Take"
+                ]
+            case "Project":
+                labels = [
+                    "Plan",
+                    "Build",
+                    "Test",
+                    "Refine",
+                    "Submit"
+                ]
+            case "Essay":
+                labels = [
+                    "Research for",
+                    "Outline",
+                    "Draft",
+                    "Revise",
+                    "Submit"
+                ]
+            default:
+                labels = [
+                    "Start",
+                    "Work on",
+                    "Continue",
+                    "Review",
+                    "Complete"
+                ]
             }
             
-            let labels = ["Start", "Continue", "Review", "Polish", "Finish"]
+            let taskCount: Int
+            if daysUntilDue <= 1 {
+                taskCount = min(1, labels.count)
+            } else if daysUntilDue <= 3 {
+                taskCount = min(2, labels.count)
+            } else if daysUntilDue <= 7 {
+                taskCount = min(3, labels.count)
+            } else if daysUntilDue <= 14 {
+                taskCount = min(4, labels.count)
+            } else {
+                taskCount = min(5, labels.count)
+            }
             
             for i in 0..<taskCount {
                 let offset: Int
@@ -67,11 +110,11 @@ struct ContentView: View {
                     offset = 0
                 } else {
                     let progress = Double(i) / Double(taskCount - 1)
-                    offset = Int(round(progress * Double(daysUntilDue)))
+                    offset = Int(progress * Double(daysUntilDue))
                 }
                 
                 let taskDate = calendar.date(byAdding: .day, value: offset, to: today) ?? today
-                let label = labels[min(i, labels.count - 1)]
+                let label = labels[i]
                 
                 tasks.append(
                     StudyTask(

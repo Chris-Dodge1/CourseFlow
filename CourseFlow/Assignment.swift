@@ -6,6 +6,7 @@ struct Assignment: Identifiable, Hashable {
     var courseName: String
     var dueDate: Date
     var priority: String
+    var type: String
     var notes: String
     var isCompleted: Bool = false
 }

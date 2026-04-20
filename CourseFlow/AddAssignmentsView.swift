@@ -10,9 +10,11 @@ struct AddAssignmentView: View {
     @State private var selectedCourse = ""
     @State private var dueDate = Date()
     @State private var priority = "Medium"
+    @State private var type = "Homework"
     @State private var notes = ""
     
     let priorities = ["Low", "Medium", "High"]
+    let assignmentTypes = ["Homework", "Exam", "Quiz", "Project", "Essay"]
     
     var body: some View {
         NavigationStack {
@@ -23,6 +25,12 @@ struct AddAssignmentView: View {
                     Picker("Course", selection: $selectedCourse) {
                         ForEach(courses, id: \.name) { course in
                             Text(course.name).tag(course.name)
+                        }
+                    }
+                    
+                    Picker("Type", selection: $type) {
+                        ForEach(assignmentTypes, id: \.self) { assignmentType in
+                            Text(assignmentType)
                         }
                     }
                     
@@ -57,6 +65,7 @@ struct AddAssignmentView: View {
                             courseName: selectedCourse,
                             dueDate: dueDate,
                             priority: priority,
+                            type: type,
                             notes: notes
                         )
                         assignments.append(newAssignment)
