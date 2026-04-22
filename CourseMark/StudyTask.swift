@@ -1,7 +1,7 @@
 import Foundation
 
 struct StudyTask: Identifiable, Hashable {
-    let id = UUID()
+    let id: String
     var title: String
     var courseName: String
     var date: Date

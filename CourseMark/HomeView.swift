@@ -2,11 +2,12 @@ import SwiftUI
 
 struct HomeView: View {
     let studyTasks: [StudyTask]
-    
+    let toggleStudyTaskCompletion: (String) -> Void
+
     var upcomingTasks: [StudyTask] {
-        studyTasks.prefix(3).map { $0 }
+        Array(studyTasks.prefix(3))
     }
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -29,19 +30,31 @@ struct HomeView: View {
                                 .foregroundStyle(.secondary)
                         } else {
                             ForEach(upcomingTasks) { task in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(task.title)
-                                        .font(.headline)
-                                    
-                                    Text(task.courseName)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                    
-                                    Text(task.date.formatted(date: .abbreviated, time: .omitted))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                HStack(alignment: .top, spacing: 12) {
+                                    Button {
+                                        toggleStudyTaskCompletion(task.id)
+                                    } label: {
+                                        Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                            .font(.title3)
+                                    }
+                                    .buttonStyle(.plain)
+
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(task.title)
+                                            .font(.headline)
+                                            .strikethrough(task.isCompleted)
+                                            .foregroundStyle(task.isCompleted ? .secondary : .primary)
+
+                                        Text(task.courseName)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+
+                                        Text(task.date.formatted(date: .abbreviated, time: .omitted))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(.thinMaterial)
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -58,5 +71,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(studyTasks: [])
+    HomeView(studyTasks: [], toggleStudyTaskCompletion: { _ in })
 }

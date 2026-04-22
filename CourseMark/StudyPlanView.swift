@@ -2,7 +2,8 @@ import SwiftUI
 
 struct StudyPlanView: View {
     let studyTasks: [StudyTask]
-    
+    let toggleStudyTaskCompletion: (String) -> Void
+
     var body: some View {
         NavigationStack {
             Group {
@@ -11,25 +12,37 @@ struct StudyPlanView: View {
                         Image(systemName: "calendar")
                             .font(.system(size: 40))
                             .foregroundStyle(.secondary)
-                        
+
                         Text("Your study plan will appear here.")
                             .foregroundStyle(.secondary)
                     }
                 } else {
                     List(studyTasks) { task in
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(task.title)
-                                .font(.headline)
-                            
-                            Text(task.courseName)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                            
-                            Text(task.date.formatted(date: .abbreviated, time: .omitted))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                        HStack(alignment: .top, spacing: 12) {
+                            Button {
+                                toggleStudyTaskCompletion(task.id)
+                            } label: {
+                                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .font(.title3)
+                            }
+                            .buttonStyle(.plain)
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(task.title)
+                                    .font(.headline)
+                                    .strikethrough(task.isCompleted)
+                                    .foregroundStyle(task.isCompleted ? .secondary : .primary)
+
+                                Text(task.courseName)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+
+                                Text(task.date.formatted(date: .abbreviated, time: .omitted))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
                     }
                 }
             }
@@ -39,5 +52,5 @@ struct StudyPlanView: View {
 }
 
 #Preview {
-    StudyPlanView(studyTasks: [])
+    StudyPlanView(studyTasks: [], toggleStudyTaskCompletion: { _ in })
 }

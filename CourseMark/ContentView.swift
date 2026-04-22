@@ -4,9 +4,11 @@ import Foundation
 struct ContentView: View {
     @State private var courses: [Course] = []
     @State private var assignments: [Assignment] = []
+    @State private var completedStudyTaskIDs: Set<String> = []
 
     private let coursesKey = "savedCourses"
     private let assignmentsKey = "savedAssignments"
+    private let completedStudyTaskIDsKey = "completedStudyTaskIDs"
 
     var generatedStudyTasks: [StudyTask] {
         generateStudyTasks(from: assignments)
@@ -14,35 +16,48 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            HomeView(studyTasks: generatedStudyTasks)
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
+            HomeView(
+                studyTasks: generatedStudyTasks,
+                toggleStudyTaskCompletion: toggleStudyTaskCompletion
+            )
+            .tabItem {
+                Label("Home", systemImage: "house")
+            }
 
             CoursesView(courses: $courses)
                 .tabItem {
                     Label("Courses", systemImage: "book")
                 }
 
-            AssignmentsView(courses: $courses, assignments: $assignments)
-                .tabItem {
-                    Label("Assignments", systemImage: "checklist")
-                }
+            AssignmentsView(
+                courses: $courses,
+                assignments: $assignments
+            )
+            .tabItem {
+                Label("Assignments", systemImage: "checklist")
+            }
 
-            StudyPlanView(studyTasks: generatedStudyTasks)
-                .tabItem {
-                    Label("Plan", systemImage: "calendar")
-                }
+            StudyPlanView(
+                studyTasks: generatedStudyTasks,
+                toggleStudyTaskCompletion: toggleStudyTaskCompletion
+            )
+            .tabItem {
+                Label("Plan", systemImage: "calendar")
+            }
         }
         .onAppear {
             loadCourses()
             loadAssignments()
+            loadCompletedStudyTaskIDs()
         }
         .onChange(of: courses) {
             saveCourses()
         }
         .onChange(of: assignments) {
             saveAssignments()
+        }
+        .onChange(of: completedStudyTaskIDs) {
+            saveCompletedStudyTaskIDs()
         }
     }
 
@@ -81,6 +96,24 @@ struct ContentView: View {
             assignments = try JSONDecoder().decode([Assignment].self, from: data)
         } catch {
             print("Failed to load assignments: \(error)")
+        }
+    }
+
+    func saveCompletedStudyTaskIDs() {
+        let idsArray = Array(completedStudyTaskIDs)
+        UserDefaults.standard.set(idsArray, forKey: completedStudyTaskIDsKey)
+    }
+
+    func loadCompletedStudyTaskIDs() {
+        let idsArray = UserDefaults.standard.stringArray(forKey: completedStudyTaskIDsKey) ?? []
+        completedStudyTaskIDs = Set(idsArray)
+    }
+
+    func toggleStudyTaskCompletion(for taskID: String) {
+        if completedStudyTaskIDs.contains(taskID) {
+            completedStudyTaskIDs.remove(taskID)
+        } else {
+            completedStudyTaskIDs.insert(taskID)
         }
     }
 
@@ -166,12 +199,18 @@ struct ContentView: View {
 
                 let taskDate = calendar.date(byAdding: .day, value: offset, to: today) ?? today
                 let label = labels[i]
+                let title = "\(label) \(assignment.title)"
+
+                let dateString = ISO8601DateFormatter().string(from: taskDate)
+                let taskID = "\(assignment.id.uuidString)-\(i)-\(dateString)"
 
                 tasks.append(
                     StudyTask(
-                        title: "\(label) \(assignment.title)",
+                        id: taskID,
+                        title: title,
                         courseName: assignment.courseName,
-                        date: taskDate
+                        date: taskDate,
+                        isCompleted: completedStudyTaskIDs.contains(taskID)
                     )
                 )
             }
