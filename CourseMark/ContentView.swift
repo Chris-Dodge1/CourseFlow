@@ -61,14 +61,6 @@ struct ContentView: View {
                 Label("Calendar", systemImage: "calendar.badge.clock")
             }
 
-            StudyPlanView(
-                studyTasks: generatedStudyTasks,
-                toggleStudyTaskCompletion: toggleStudyTaskCompletion
-            )
-            .tabItem {
-                Label("Plan", systemImage: "list.bullet.rectangle")
-            }
-
             SettingsView(
                 remindersEnabled: $remindersEnabled,
                 reminderTime: $reminderTime
