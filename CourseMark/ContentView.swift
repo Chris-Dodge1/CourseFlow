@@ -14,12 +14,14 @@ struct ContentView: View {
         second: 0,
         of: Date()
     ) ?? Date()
+    @State private var reminderOffsetDays: Int = 0
 
     private let coursesKey = "savedCourses"
     private let assignmentsKey = "savedAssignments"
     private let completedStudyTaskIDsKey = "completedStudyTaskIDs"
     private let remindersEnabledKey = "remindersEnabled"
     private let reminderTimeKey = "reminderTime"
+    private let reminderOffsetDaysKey = "reminderOffsetDays"
 
     var generatedStudyTasks: [StudyTask] {
         generateStudyTasks(from: assignments)
@@ -63,7 +65,8 @@ struct ContentView: View {
 
             SettingsView(
                 remindersEnabled: $remindersEnabled,
-                reminderTime: $reminderTime
+                reminderTime: $reminderTime,
+                reminderOffsetDays: $reminderOffsetDays
             )
             .tabItem {
                 Label("Settings", systemImage: "gear")
@@ -96,13 +99,18 @@ struct ContentView: View {
             saveReminderSettings()
             scheduleReminders()
         }
+        .onChange(of: reminderOffsetDays) {
+            saveReminderSettings()
+            scheduleReminders()
+        }
     }
 
     func scheduleReminders() {
         NotificationManager.scheduleAssignmentReminders(
             for: assignments,
             remindersEnabled: remindersEnabled,
-            reminderTime: reminderTime
+            reminderTime: reminderTime,
+            reminderOffsetDays: reminderOffsetDays
         )
     }
 
@@ -157,6 +165,7 @@ struct ContentView: View {
     func saveReminderSettings() {
         UserDefaults.standard.set(remindersEnabled, forKey: remindersEnabledKey)
         UserDefaults.standard.set(reminderTime, forKey: reminderTimeKey)
+        UserDefaults.standard.set(reminderOffsetDays, forKey: reminderOffsetDaysKey)
     }
 
     func loadReminderSettings() {
@@ -165,6 +174,8 @@ struct ContentView: View {
         if let savedTime = UserDefaults.standard.object(forKey: reminderTimeKey) as? Date {
             reminderTime = savedTime
         }
+
+        reminderOffsetDays = UserDefaults.standard.object(forKey: reminderOffsetDaysKey) as? Int ?? 0
     }
 
     func toggleStudyTaskCompletion(for taskID: String) {
@@ -192,44 +203,15 @@ struct ContentView: View {
 
             switch assignment.type {
             case "Exam":
-                labels = [
-                    "Review notes for",
-                    "Practice problems for",
-                    "Identify weak topics for",
-                    "Final review for",
-                    "Take"
-                ]
+                labels = ["Review notes for", "Practice problems for", "Identify weak topics for", "Final review for", "Take"]
             case "Quiz":
-                labels = [
-                    "Review material for",
-                    "Practice for",
-                    "Final review for",
-                    "Take"
-                ]
+                labels = ["Review material for", "Practice for", "Final review for", "Take"]
             case "Project":
-                labels = [
-                    "Plan",
-                    "Build",
-                    "Test",
-                    "Refine",
-                    "Submit"
-                ]
+                labels = ["Plan", "Build", "Test", "Refine", "Submit"]
             case "Essay":
-                labels = [
-                    "Research for",
-                    "Outline",
-                    "Draft",
-                    "Revise",
-                    "Submit"
-                ]
+                labels = ["Research for", "Outline", "Draft", "Revise", "Submit"]
             default:
-                labels = [
-                    "Start",
-                    "Work on",
-                    "Continue",
-                    "Review",
-                    "Complete"
-                ]
+                labels = ["Start", "Work on", "Continue", "Review", "Complete"]
             }
 
             let taskCount: Int
